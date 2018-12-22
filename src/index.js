@@ -1,47 +1,54 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Answer from './Containers/Answer';
+import Question from './Containers/Question';
 
-class App extends React.Component {
+class Quiz extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    for (let index = 0; index < this.quiz.children.length; index++) {
+      this.quiz.children[index].style.display = 'none';
+    }
+    this.quiz.children[0].style.display = 'block';
+  }
+
+  onChecked = index => {
+    this.setState({ questionIndex: index });
+  };
+
+  shouldComponentUpdate(props, state) {
+    for (let index = 0; index < this.quiz.children.length; index++) {
+      if (this.quiz.children[index].getAttribute('rightanswer') == state.questionIndex) {
+        this.quiz.children[index].style.display = 'none';
+        if (index + 1 == this.quiz.children.length) {
+          console.log('quiz is finished');
+        } else {
+          this.quiz.children[index + 1].style.display = 'block';
+        }
+      }
+    }
+    return true;
+  }
+
   render() {
     return (
-      <div className="quiz">
-        <div className="question">
-          <div className="question-text">Bla bla bla ?</div>
-          <form
-            className="answers"
-            ref={ref => {
-              this.answers = ref;
-            }}
-          >
-            {[1, 2, 3].map((element, index) => {
-              return <Answer answer={'wrong'} key={index} />;
-            })}
-            <Answer answer={'right'} key={4} />
-          </form>
-          <button
-            className="checkAnswer"
-            onClick={() => {
-              for (let index = 0; index < this.answers.children.length; index++) {
-                if (
-                  this.answers.children[index].children[0].checked &&
-                  this.answers.children[index].children[0].getAttribute('answer') == 'right'
-                ) {
-                  alert(
-                    'И правельный ответ ' +
-                      this.answers.children[index].children[0].getAttribute('answer')
-                  );
-                }
-              }
-            }}
-          >
-            Check
-          </button>
-        </div>
+      <div
+        className="quiz"
+        ref={ref => {
+          this.quiz = ref;
+        }}
+      >
+        <Question rightAnswer="brad" onChecked={this.onChecked} />
+        <Question rightAnswer="swag" onChecked={this.onChecked} />
+        <Question rightAnswer="head" onChecked={this.onChecked} />
+        <Question rightAnswer="wow" onChecked={this.onChecked} />
+        <Question rightAnswer="lol" onChecked={this.onChecked} />
       </div>
     );
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<Quiz />, document.getElementById('root'));
