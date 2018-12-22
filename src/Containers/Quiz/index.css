@@ -1,0 +1,13 @@
+.question {
+  padding: 30px;
+  background: white;
+  box-shadow: 0 0 20px 1px rgb(238, 238, 238);
+  display: flex;
+  flex-direction: column;
+}
+
+.question-text {
+  color: #5e4b6e;
+  font-size: 22px;
+  font-weight: bold;
+}

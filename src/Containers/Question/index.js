@@ -10,25 +10,22 @@ class Question extends React.Component {
 
   componentWillMount() {
     var answersArray = [
-      { answer: 'cat' },
-      { answer: 'fat' },
+      { answer: 'Кот' },
+      { answer: 'Толстый' },
       { answer: this.props.rightAnswer },
-      { answer: 'rat' }
+      { answer: 'Сова' }
     ];
 
-    // Fisher-Yates  Shuffle ALGORITHM
+    // Fisher-Yates Shuffle ALGORITHM
     var shuffle = function(array) {
       var currentIndex = array.length,
         temporaryValue,
         randomIndex;
 
-      // While there remain elements to shuffle...
       while (0 !== currentIndex) {
-        // Pick a remaining element...
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
 
-        // And swap it with the current element.
         temporaryValue = array[currentIndex];
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
@@ -44,8 +41,14 @@ class Question extends React.Component {
 
   render() {
     return (
-      <div className="question" rightanswer={this.props.rightAnswer}>
-        <div className="question-text">Bla bla bla ?</div>
+      <div
+        className="question"
+        rightanswer={this.props.rightAnswer}
+        ref={ref => {
+          this.question = ref;
+        }}
+      >
+        <div className="question-text">{this.props.questionWord} переводится как ?</div>
         <form
           className="answers"
           ref={ref => {
@@ -53,11 +56,23 @@ class Question extends React.Component {
           }}
         >
           {this.state.answersArray.map((element, index) => {
-            return <Answer answer={element.answer} key={index} />;
+            return (
+              <Answer
+                answer={element.answer}
+                key={index}
+                answerId={this.props.questionWord + '_' + element.answer + '_' + index}
+                ref={ref => {
+                  this.answer = ref;
+                }}
+              />
+            );
           })}
         </form>
-        <button
+        <div
           className="checkAnswer"
+          ref={ref => {
+            this.checkAnswer = ref;
+          }}
           onClick={() => {
             for (let index = 0; index < this.answers.children.length; index++) {
               if (
@@ -65,19 +80,27 @@ class Question extends React.Component {
                 this.answers.children[index].children[0].getAttribute('answer') ==
                   this.props.rightAnswer
               ) {
-                this.props.onChecked(this.props.rightAnswer);
+                this.question.style.background = '#3fffa6';
+                setTimeout(() => {
+                  this.props.onChecked(this.props.rightAnswer);
+                }, 800);
               } else if (
                 this.answers.children[index].children[0].checked &&
                 this.answers.children[index].children[0].getAttribute('answer') !=
                   this.props.rightAnswer
               ) {
-                alert('wrong');
+                this.question.style.background = '#ff6c6c';
+                setTimeout(() => {
+                  this.question.style.background = 'white';
+                }, 150);
+
+                this.answers.children[index].children[0].checked = false;
               }
             }
           }}
         >
-          Check
-        </button>
+          Дальше
+        </div>
       </div>
     );
   }
