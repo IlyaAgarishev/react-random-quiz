@@ -1,6 +1,7 @@
 {
-  "name": "quiz",
+  "name": "react-random-quiz",
   "version": "0.1.0",
+  "author": "Ilya Agarishev",
   "private": true,
   "dependencies": {
     "react": "^16.7.0",

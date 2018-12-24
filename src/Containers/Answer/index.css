@@ -1,9 +1,13 @@
 .answer-wrapper {
   margin-top: 10px;
-  /* background: red; */
   border-radius: 100px;
   transition: all 0.5s ease;
   padding: 10px;
+}
+
+.answerWord {
+  max-width: 200px;
+  word-wrap: break-word;
 }
 
 [type='radio']:checked,

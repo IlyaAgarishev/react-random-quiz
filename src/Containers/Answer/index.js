@@ -13,7 +13,7 @@ class Answer extends React.Component {
           className="answer"
           answer={this.props.answer}
         />
-        <label id={this.props.answerId} htmlFor={this.props.answerId}>
+        <label id={this.props.answerId} htmlFor={this.props.answerId} className="answerWord">
           {this.props.answer}
         </label>
       </div>

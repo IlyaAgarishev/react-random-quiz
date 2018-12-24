@@ -16,16 +16,16 @@ class Question extends React.Component {
     this.state = { answers: [] };
   }
 
-  takeRandomWordFromRussianDictionary = array => {
+  takeRandomWordFromArray = array => {
     return array[Math.floor(Math.random(0, 1) * array.length)];
   };
 
   createAnswersArray = array => {
     var answersArray = [
-      { answer: this.takeRandomWordFromRussianDictionary(array) },
-      { answer: this.takeRandomWordFromRussianDictionary(array) },
       { answer: this.props.rightAnswer.toLowerCase() },
-      { answer: this.takeRandomWordFromRussianDictionary(array) }
+      { answer: this.takeRandomWordFromArray(array) },
+      { answer: this.takeRandomWordFromArray(array) },
+      { answer: this.takeRandomWordFromArray(array) }
     ];
 
     return answersArray;
@@ -35,8 +35,9 @@ class Question extends React.Component {
     var xhr = new XMLHttpRequest();
     xhr.open(
       'GET',
-      'https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=dict.1.1.20181222T134922Z.9d94e99b6da5e84a.19d04de00934554d34f2a675f0100fd307a76107&lang=ru-en&text=' +
-        this.props.rightAnswer,
+      `https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=dict.1.1.20181222T134922Z.9d94e99b6da5e84a.19d04de00934554d34f2a675f0100fd307a76107&lang=ru-en&text=${
+        this.props.rightAnswer
+      }`,
       false
     );
     xhr.send();
@@ -72,29 +73,30 @@ class Question extends React.Component {
     }
   };
 
+  // Fisher-Yates Shuffle ALGORITHM
+  shuffleArray = array => {
+    var currentIndex = array.length,
+      temporaryValue,
+      randomIndex;
+
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+  };
+
   componentWillMount() {
+    // Generating array with special parts of speach
     var answersArray = this.answersArrayGenerator();
-
-    // Fisher-Yates Shuffle ALGORITHM
-    var shuffle = function(array) {
-      var currentIndex = array.length,
-        temporaryValue,
-        randomIndex;
-
-      while (0 !== currentIndex) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-      }
-
-      return array;
-    };
-
-    shuffle(answersArray);
-
+    // Shuffling this array
+    this.shuffleArray(answersArray);
+    // Than setting it to state
     this.setState({ answersArray: answersArray });
   }
 
@@ -119,7 +121,15 @@ class Question extends React.Component {
               <Answer
                 answer={element.answer}
                 key={index}
-                answerId={this.props.questionWord + '_' + element.answer + '_' + index}
+                answerId={
+                  this.props.questionWord +
+                  '_' +
+                  element.answer +
+                  '_' +
+                  index +
+                  '_' +
+                  Math.floor(Math.random(0, 1) * 1000)
+                }
                 ref={ref => {
                   this.answer = ref;
                 }}
@@ -133,20 +143,22 @@ class Question extends React.Component {
             this.checkAnswer = ref;
           }}
           onClick={() => {
-            for (let index = 0; index < this.answers.children.length; index++) {
-              var inputRadio = this.answers.children[index].children[0];
-              if (
+            var rightAnswer = this.props.rightAnswer;
+            for (let i = 0; i < this.answers.children.length; i++) {
+              // Define variables
+              var inputRadio = this.answers.children[i].children[0];
+              var correctAnswerChecked =
                 inputRadio.checked &&
-                inputRadio.getAttribute('answer') == this.props.rightAnswer.toLowerCase()
-              ) {
+                inputRadio.getAttribute('answer') == rightAnswer.toLowerCase();
+              var wrongAnswerChecked =
+                inputRadio.checked && inputRadio.getAttribute('answer') != rightAnswer;
+              //On Check logic
+              if (correctAnswerChecked) {
                 this.question.style.background = '#3fffa6';
                 setTimeout(() => {
-                  this.props.onChecked(this.props.rightAnswer);
+                  this.props.onChecked(rightAnswer);
                 }, 800);
-              } else if (
-                inputRadio.checked &&
-                inputRadio.getAttribute('answer') != this.props.rightAnswer
-              ) {
+              } else if (wrongAnswerChecked) {
                 this.question.style.background = '#ff6c6c';
                 setTimeout(() => {
                   this.question.style.background = 'white';

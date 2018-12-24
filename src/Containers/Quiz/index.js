@@ -5,27 +5,37 @@ import Question from '../Question';
 class Quiz extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      wordsToTest: [
+        { word: 'Great', translation: 'Великий' },
+        { word: 'Sad', translation: 'Грустный' },
+        { word: 'Rat', translation: 'Крыса' },
+        { word: 'Pet', translation: 'Питомец' }
+      ]
+    };
   }
 
   componentDidMount() {
-    for (let index = 0; index < this.quiz.children.length; index++) {
-      this.quiz.children[index].style.display = 'none';
+    var questions = this.quiz.children;
+    for (let i = 0; i < questions.length; i++) {
+      questions[i].style.display = 'none';
     }
-    this.quiz.children[0].style.display = 'flex';
+    questions[0].style.display = 'flex';
   }
 
-  onChecked = index => {
-    this.setState({ questionIndex: index });
+  onChecked = questionIndex => {
+    this.setState({ questionIndex: questionIndex });
   };
 
   shouldComponentUpdate(props, state) {
-    for (let index = 0; index < this.quiz.children.length; index++) {
-      if (this.quiz.children[index].getAttribute('rightanswer') == state.questionIndex) {
-        this.quiz.children[index].style.display = 'none';
-        if (index + 1 == this.quiz.children.length) {
+    var questions = this.quiz.children;
+    for (let i = 0; i < questions.length; i++) {
+      if (questions[i].getAttribute('rightanswer') == state.questionIndex) {
+        questions[i].style.display = 'none';
+        if (i + 1 == questions.length) {
           console.log('quiz is finished');
         } else {
-          this.quiz.children[index + 1].style.display = 'flex';
+          questions[i + 1].style.display = 'flex';
         }
       }
     }
@@ -40,10 +50,17 @@ class Quiz extends React.Component {
           this.quiz = ref;
         }}
       >
-        <Question rightAnswer="Великий" questionWord="Great" onChecked={this.onChecked} />
-        <Question rightAnswer="Грустный" questionWord="Sad" onChecked={this.onChecked} />
-        <Question rightAnswer="Крыса" questionWord="Rat" onChecked={this.onChecked} />
-        <Question rightAnswer="Питомец" questionWord="Pet" onChecked={this.onChecked} />
+        {this.state.wordsToTest.map((element, index) => {
+          return (
+            <Question
+              rightAnswer={element.translation}
+              questionWord={element.word}
+              onChecked={this.onChecked}
+              key={index}
+            />
+          );
+        })}
+
         <div>quiz is finished</div>
       </div>
     );
