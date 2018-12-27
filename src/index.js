@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Quiz from './Containers/Quiz';
+import Question from './Containers/Question';
 
-ReactDOM.render(<Quiz />, document.getElementById('root'));
+ReactDOM.render(<Question />, document.getElementById('root'));

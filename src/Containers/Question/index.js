@@ -13,16 +13,43 @@ import Verbs from '../../RussianDictionary/verbs.js';
 class Question extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { answers: [] };
+    this.state = {
+      wordsToTest: [
+        { word: 'Great', translation: 'Великий' },
+        { word: 'Sad', translation: 'Грустный' },
+        { word: 'Rat', translation: 'Крыса' },
+        { word: 'Pet', translation: 'Питомец' }
+      ],
+      answers: [],
+      questionIndex: 0,
+      questionWord: 'Great',
+      rightAnswer: 'Великий'
+    };
+  }
+
+  componentWillMount() {
+    // let wordsToTest = [];
+    // for (let i = 0; i < 100; i++) {
+    //   wordsToTest.push({ word: `Word_${i}`, translation: `слово_${i}` });
+    // }
+    // this.setState({ wordsToTest: wordsToTest });
+
+    // Generating array with special parts of speach
+    var answersArray = this.answersArrayGenerator(this.state.rightAnswer);
+    // Shuffling this array
+    this.shuffleArray(answersArray);
+    // Than setting it to state
+    this.setState({ answersArray: answersArray });
   }
 
   takeRandomWordFromArray = array => {
     return array[Math.floor(Math.random(0, 1) * array.length)];
   };
 
-  createAnswersArray = array => {
+  createAnswersArray = (array, rightAnswer) => {
+    console.log(rightAnswer);
     var answersArray = [
-      { answer: this.props.rightAnswer.toLowerCase() },
+      { answer: rightAnswer.toLowerCase() },
       { answer: this.takeRandomWordFromArray(array) },
       { answer: this.takeRandomWordFromArray(array) },
       { answer: this.takeRandomWordFromArray(array) }
@@ -31,13 +58,11 @@ class Question extends React.Component {
     return answersArray;
   };
 
-  answersArrayGenerator = () => {
+  answersArrayGenerator = rightAnswer => {
     var xhr = new XMLHttpRequest();
     xhr.open(
       'GET',
-      `https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=dict.1.1.20181222T134922Z.9d94e99b6da5e84a.19d04de00934554d34f2a675f0100fd307a76107&lang=ru-en&text=${
-        this.props.rightAnswer
-      }`,
+      `https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=dict.1.1.20181222T134922Z.9d94e99b6da5e84a.19d04de00934554d34f2a675f0100fd307a76107&lang=ru-en&text=${rightAnswer}`,
       false
     );
     xhr.send();
@@ -52,23 +77,23 @@ class Question extends React.Component {
       }
 
       if (partOfSpeach == 'adjective') {
-        return this.createAnswersArray(Adjectives);
+        return this.createAnswersArray(Adjectives, rightAnswer);
       } else if (partOfSpeach == 'adverb') {
-        return this.createAnswersArray(Adverbs);
+        return this.createAnswersArray(Adverbs, rightAnswer);
       } else if (partOfSpeach == 'conjunction' || partOfSpeach == 'particle') {
-        return this.createAnswersArray(Conjunctions);
+        return this.createAnswersArray(Conjunctions, rightAnswer);
       } else if (partOfSpeach == 'noun') {
-        return this.createAnswersArray(Nouns);
+        return this.createAnswersArray(Nouns, rightAnswer);
       } else if (partOfSpeach == 'numeral') {
-        return this.createAnswersArray(Numerous);
+        return this.createAnswersArray(Numerous, rightAnswer);
       } else if (partOfSpeach == 'preposition') {
-        return this.createAnswersArray(Prepositions);
+        return this.createAnswersArray(Prepositions, rightAnswer);
       } else if (partOfSpeach == 'pronoun') {
-        return this.createAnswersArray(Pronouns);
+        return this.createAnswersArray(Pronouns, rightAnswer);
       } else if (partOfSpeach == 'verb') {
-        return this.createAnswersArray(Verbs);
+        return this.createAnswersArray(Verbs, rightAnswer);
       } else {
-        return this.createAnswersArray(Nouns);
+        return this.createAnswersArray(Nouns, rightAnswer);
       }
     }
   };
@@ -91,25 +116,23 @@ class Question extends React.Component {
     return array;
   };
 
-  componentWillMount() {
-    // Generating array with special parts of speach
-    var answersArray = this.answersArrayGenerator();
-    // Shuffling this array
-    this.shuffleArray(answersArray);
-    // Than setting it to state
-    this.setState({ answersArray: answersArray });
-  }
+  onInputChange = word => {
+    this.setState({ selectedAnswer: word });
+  };
+
+  // shouldComponentUpdate(props, state) {
+  //   alert();
+  // }
 
   render() {
     return (
       <div
         className="question"
-        rightanswer={this.props.rightAnswer}
         ref={ref => {
           this.question = ref;
         }}
       >
-        <div className="question-text">"{this.props.questionWord}" переводится как ?</div>
+        <div className="question-text">"{this.state.questionWord}" переводится как ?</div>
         <form
           className="answers"
           ref={ref => {
@@ -119,10 +142,11 @@ class Question extends React.Component {
           {this.state.answersArray.map((element, index) => {
             return (
               <Answer
+                onInputChange={this.onInputChange}
                 answer={element.answer}
                 key={index}
                 answerId={
-                  this.props.questionWord +
+                  this.state.questionWord +
                   '_' +
                   element.answer +
                   '_' +
@@ -143,28 +167,26 @@ class Question extends React.Component {
             this.checkAnswer = ref;
           }}
           onClick={() => {
-            var rightAnswer = this.props.rightAnswer;
-            for (let i = 0; i < this.answers.children.length; i++) {
-              // Define variables
-              var inputRadio = this.answers.children[i].children[0];
-              var correctAnswerChecked =
-                inputRadio.checked &&
-                inputRadio.getAttribute('answer') == rightAnswer.toLowerCase();
-              var wrongAnswerChecked =
-                inputRadio.checked && inputRadio.getAttribute('answer') != rightAnswer;
-              //On Check logic
-              if (correctAnswerChecked) {
-                this.question.style.background = '#3fffa6';
-                setTimeout(() => {
-                  this.props.onChecked(rightAnswer);
-                }, 800);
-              } else if (wrongAnswerChecked) {
-                this.question.style.background = '#ff6c6c';
-                setTimeout(() => {
-                  this.question.style.background = 'white';
-                }, 150);
-                inputRadio.checked = false;
-              }
+            {
+              /* for (let i = 0; i < this.question.children[1].children[0].length; i++) {
+              const element = this.question.children[1].children[0][i];
+              
+            } */
+            }
+
+            if (this.state.selectedAnswer == this.state.rightAnswer.toLowerCase()) {
+              this.setState({ questionIndex: this.state.questionIndex + 1 });
+              this.setState({
+                questionWord: this.state.wordsToTest[this.state.questionIndex + 1].word,
+                rightAnswer: this.state.wordsToTest[this.state.questionIndex + 1].translation
+              });
+              var answersArray = this.answersArrayGenerator(
+                this.state.wordsToTest[this.state.questionIndex + 1].translation
+              );
+              // Shuffling this array
+              this.shuffleArray(answersArray);
+              // Than setting it to state
+              this.setState({ answersArray: answersArray });
             }
           }}
         >
