@@ -29,13 +29,8 @@ class Question extends React.Component {
   componentWillMount() {
     this.setState({
       questionWord: this.state.wordsToTest[0].word,
-      rightAnswer: this.state.wordsToTest[0].translation
+      rightAnswer: this.state.wordsToTest[0].translation.toLowerCase()
     });
-    // let wordsToTest = [];
-    // for (let i = 0; i < 100; i++) {
-    //   wordsToTest.push({ word: `Word_${i}`, translation: `слово_${i}` });
-    // }
-    // this.setState({ wordsToTest: wordsToTest });
 
     this.finalAnswersArrayGenerator(this.state.wordsToTest[0].translation);
   }
@@ -113,15 +108,16 @@ class Question extends React.Component {
     return array;
   };
 
-  uncheckRadioInputs = children => {
-    for (let i = 0; i < children.length; i++) {
-      children[i].children[0].checked = false;
+  uncheckRadioInputs = inputParents => {
+    for (let i = 0; i < inputParents.length; i++) {
+      inputParents[i].children[0].checked = false;
     }
   };
 
   finalAnswersArrayGenerator = rightAnswer => {
+    // Generate array of answers with right parts of speach
     var answersArray = this.smartAnswersCreator(rightAnswer.toLowerCase());
-    // Shuffling this array
+    // Shuffling this generated array
     this.shuffleArray(answersArray);
     // Than setting it to state
     this.setState({ answersArray: answersArray });
@@ -133,7 +129,7 @@ class Question extends React.Component {
 
   render() {
     return this.state.quizIsFinished ? (
-      <div className="quizIsFinished">Тест пройден</div>
+      <div className="quizIsFinished">quiz is finished</div>
     ) : (
       <div
         className="question"
@@ -176,16 +172,16 @@ class Question extends React.Component {
             this.checkAnswer = ref;
           }}
           onClick={() => {
-            console.log(this.question.children[1].children[0].children[0]);
-
-            if (this.state.selectedAnswer == this.state.rightAnswer.toLowerCase()) {
+            if (this.state.selectedAnswer == this.state.rightAnswer) {
               this.question.style.background = '#3FFFA6';
               setTimeout(() => {
                 this.setState({ questionIndex: this.state.questionIndex + 1 });
                 if (this.state.questionIndex != this.state.wordsToTest.length) {
                   this.setState({
                     questionWord: this.state.wordsToTest[this.state.questionIndex].word,
-                    rightAnswer: this.state.wordsToTest[this.state.questionIndex].translation
+                    rightAnswer: this.state.wordsToTest[
+                      this.state.questionIndex
+                    ].translation.toLowerCase()
                   });
                   this.finalAnswersArrayGenerator(this.state.rightAnswer);
                   this.question.style.background = 'white';

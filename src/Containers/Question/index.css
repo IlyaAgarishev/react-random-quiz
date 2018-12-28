@@ -31,13 +31,11 @@
 
 .questionsCounter {
   align-self: flex-end;
-  color: #493a55;
+  color: #bdbdbd;
   font-size: 13px;
+  font-weight: 500;
 }
 
 .quizIsFinished {
-  padding: 50px;
-
-  box-shadow: 0 0 20px 1px rgb(238, 238, 238);
   background: white !important;
 }
