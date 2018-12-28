@@ -19,7 +19,7 @@ class Answer extends React.Component {
           answer={this.props.answer}
           onChange={() => {
             let answer = this.answerLabel.innerHTML;
-            this.props.onInputChange(this.answerLabel.innerHTML);
+            this.props.onInputChange(answer);
           }}
         />
         <label

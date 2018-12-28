@@ -22,34 +22,31 @@ class Question extends React.Component {
       ],
       answers: [],
       questionIndex: 0,
-      questionWord: 'Great',
-      rightAnswer: 'Великий'
+      quizIsFinished: false
     };
   }
 
   componentWillMount() {
+    this.setState({
+      questionWord: this.state.wordsToTest[0].word,
+      rightAnswer: this.state.wordsToTest[0].translation
+    });
     // let wordsToTest = [];
     // for (let i = 0; i < 100; i++) {
     //   wordsToTest.push({ word: `Word_${i}`, translation: `слово_${i}` });
     // }
     // this.setState({ wordsToTest: wordsToTest });
 
-    // Generating array with special parts of speach
-    var answersArray = this.answersArrayGenerator(this.state.rightAnswer);
-    // Shuffling this array
-    this.shuffleArray(answersArray);
-    // Than setting it to state
-    this.setState({ answersArray: answersArray });
+    this.finalAnswersArrayGenerator(this.state.wordsToTest[0].translation);
   }
 
   takeRandomWordFromArray = array => {
-    return array[Math.floor(Math.random(0, 1) * array.length)];
+    return array[Math.floor(Math.random(0, 1) * array.length)].toLowerCase();
   };
 
   createAnswersArray = (array, rightAnswer) => {
-    console.log(rightAnswer);
     var answersArray = [
-      { answer: rightAnswer.toLowerCase() },
+      { answer: rightAnswer },
       { answer: this.takeRandomWordFromArray(array) },
       { answer: this.takeRandomWordFromArray(array) },
       { answer: this.takeRandomWordFromArray(array) }
@@ -58,7 +55,7 @@ class Question extends React.Component {
     return answersArray;
   };
 
-  answersArrayGenerator = rightAnswer => {
+  smartAnswersCreator = rightAnswer => {
     var xhr = new XMLHttpRequest();
     xhr.open(
       'GET',
@@ -116,16 +113,28 @@ class Question extends React.Component {
     return array;
   };
 
+  uncheckRadioInputs = children => {
+    for (let i = 0; i < children.length; i++) {
+      children[i].children[0].checked = false;
+    }
+  };
+
+  finalAnswersArrayGenerator = rightAnswer => {
+    var answersArray = this.smartAnswersCreator(rightAnswer.toLowerCase());
+    // Shuffling this array
+    this.shuffleArray(answersArray);
+    // Than setting it to state
+    this.setState({ answersArray: answersArray });
+  };
+
   onInputChange = word => {
     this.setState({ selectedAnswer: word });
   };
 
-  // shouldComponentUpdate(props, state) {
-  //   alert();
-  // }
-
   render() {
-    return (
+    return this.state.quizIsFinished ? (
+      <div className="quizIsFinished">Тест пройден</div>
+    ) : (
       <div
         className="question"
         ref={ref => {
@@ -167,30 +176,37 @@ class Question extends React.Component {
             this.checkAnswer = ref;
           }}
           onClick={() => {
-            {
-              /* for (let i = 0; i < this.question.children[1].children[0].length; i++) {
-              const element = this.question.children[1].children[0][i];
-              
-            } */
-            }
+            console.log(this.question.children[1].children[0].children[0]);
 
             if (this.state.selectedAnswer == this.state.rightAnswer.toLowerCase()) {
-              this.setState({ questionIndex: this.state.questionIndex + 1 });
-              this.setState({
-                questionWord: this.state.wordsToTest[this.state.questionIndex + 1].word,
-                rightAnswer: this.state.wordsToTest[this.state.questionIndex + 1].translation
-              });
-              var answersArray = this.answersArrayGenerator(
-                this.state.wordsToTest[this.state.questionIndex + 1].translation
-              );
-              // Shuffling this array
-              this.shuffleArray(answersArray);
-              // Than setting it to state
-              this.setState({ answersArray: answersArray });
+              this.question.style.background = '#3FFFA6';
+              setTimeout(() => {
+                this.setState({ questionIndex: this.state.questionIndex + 1 });
+                if (this.state.questionIndex != this.state.wordsToTest.length) {
+                  this.setState({
+                    questionWord: this.state.wordsToTest[this.state.questionIndex].word,
+                    rightAnswer: this.state.wordsToTest[this.state.questionIndex].translation
+                  });
+                  this.finalAnswersArrayGenerator(this.state.rightAnswer);
+                  this.question.style.background = 'white';
+                  this.uncheckRadioInputs(this.question.children[1].children);
+                } else {
+                  this.setState({ quizIsFinished: true });
+                }
+              }, 700);
+            } else {
+              this.uncheckRadioInputs(this.question.children[1].children);
+              this.question.style.background = '#ff6c6c';
+              setTimeout(() => {
+                this.question.style.background = 'white';
+              }, 150);
             }
           }}
         >
           Дальше
+        </div>
+        <div className="questionsCounter">
+          {this.state.questionIndex + 1} / {this.state.wordsToTest.length}
         </div>
       </div>
     );
