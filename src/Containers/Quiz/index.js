@@ -10,7 +10,7 @@ import Prepositions from '../../RussianDictionary/prepositions.js';
 import Pronouns from '../../RussianDictionary/pronouns.js';
 import Verbs from '../../RussianDictionary/verbs.js';
 
-class Question extends React.Component {
+class Quiz extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -132,9 +132,9 @@ class Question extends React.Component {
       <div className="quizIsFinished">quiz is finished</div>
     ) : (
       <div
-        className="question"
+        className="quiz"
         ref={ref => {
-          this.question = ref;
+          this.quiz = ref;
         }}
       >
         <div className="question-text">"{this.state.questionWord}" переводится как ?</div>
@@ -173,7 +173,7 @@ class Question extends React.Component {
           }}
           onClick={() => {
             if (this.state.selectedAnswer == this.state.rightAnswer) {
-              this.question.style.background = '#3FFFA6';
+              this.quiz.style.background = '#3FFFA6';
               setTimeout(() => {
                 this.setState({ questionIndex: this.state.questionIndex + 1 });
                 if (this.state.questionIndex != this.state.wordsToTest.length) {
@@ -184,17 +184,17 @@ class Question extends React.Component {
                     ].translation.toLowerCase()
                   });
                   this.finalAnswersArrayGenerator(this.state.rightAnswer);
-                  this.question.style.background = 'white';
-                  this.uncheckRadioInputs(this.question.children[1].children);
+                  this.quiz.style.background = 'white';
+                  this.uncheckRadioInputs(this.quiz.children[1].children);
                 } else {
                   this.setState({ quizIsFinished: true });
                 }
               }, 700);
             } else {
-              this.uncheckRadioInputs(this.question.children[1].children);
-              this.question.style.background = '#ff6c6c';
+              this.uncheckRadioInputs(this.quiz.children[1].children);
+              this.quiz.style.background = '#ff6c6c';
               setTimeout(() => {
-                this.question.style.background = 'white';
+                this.quiz.style.background = 'white';
               }, 150);
             }
           }}
@@ -209,4 +209,4 @@ class Question extends React.Component {
   }
 }
 
-export default Question;
+export default Quiz;
