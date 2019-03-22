@@ -1,5 +1,5 @@
 import React from "react";
-import "./index.css";
+import styles from "./index.module.css";
 import Answer from "../Answer";
 import Adjectives from "../../RussianDictionary/adjectives.js";
 import Adverbs from "../../RussianDictionary/adverbs.js";
@@ -127,19 +127,18 @@ class Quiz extends React.Component {
 
   render() {
     return this.state.quizIsFinished ? (
-      <div className="quizIsFinished">quiz is finished</div>
+      <div className={styles.quizIsFinished}>quiz is finished</div>
     ) : (
       <div
-        className="quiz"
+        className={styles.quiz}
         ref={ref => {
           this.quiz = ref;
         }}
       >
-        <div className="question-text">
+        <div className={styles.questionText}>
           "{this.state.questionWord}" переводится как ?
         </div>
         <form
-          className="answers"
           ref={ref => {
             this.answers = ref;
           }}
@@ -167,7 +166,7 @@ class Quiz extends React.Component {
           })}
         </form>
         <div
-          className="checkAnswer"
+          className={styles.checkAnswer}
           ref={ref => {
             this.checkAnswer = ref;
           }}
@@ -203,7 +202,7 @@ class Quiz extends React.Component {
         >
           Дальше
         </div>
-        <div className="questionsCounter">
+        <div className={styles.questionsCounter}>
           {this.state.questionIndex + 1} / {this.state.wordsToTest.length}
         </div>
       </div>
