@@ -1,14 +1,7 @@
 import React from "react";
 import styles from "./index.module.css";
 import Answer from "../Answer";
-import Adjectives from "../../RussianDictionary/adjectives.js";
-import Adverbs from "../../RussianDictionary/adverbs.js";
-import Conjunctions from "../../RussianDictionary/conjunctions.js";
-import Nouns from "../../RussianDictionary/nouns.js";
-import Numerous from "../../RussianDictionary/numerous.js";
-import Prepositions from "../../RussianDictionary/prepositions.js";
-import Pronouns from "../../RussianDictionary/pronouns.js";
-import Verbs from "../../RussianDictionary/verbs.js";
+import { finalAnswersArrayGenerator } from "../../arrayGenerator.js";
 
 class Quiz extends React.Component {
   constructor(props) {
@@ -24,101 +17,26 @@ class Quiz extends React.Component {
     };
   }
 
+  setAnswersArray = answersArray => {
+    this.setState({ answersArray: answersArray });
+  };
+
   componentWillMount() {
     this.setState({
       questionWord: this.state.wordsToTest[0].word,
       rightAnswer: this.state.wordsToTest[0].translation.toLowerCase()
     });
 
-    this.finalAnswersArrayGenerator(this.state.wordsToTest[0].translation);
-  }
-
-  takeRandomWordFromArray = array => {
-    return array[Math.floor(Math.random(0, 1) * array.length)].toLowerCase();
-  };
-
-  createAnswersArray = (array, rightAnswer) => {
-    var answersArray = [
-      { answer: rightAnswer },
-      { answer: this.takeRandomWordFromArray(array) },
-      { answer: this.takeRandomWordFromArray(array) },
-      { answer: this.takeRandomWordFromArray(array) }
-    ];
-
-    return answersArray;
-  };
-
-  smartAnswersCreator = rightAnswer => {
-    var xhr = new XMLHttpRequest();
-    xhr.open(
-      "GET",
-      `https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=dict.1.1.20181222T134922Z.9d94e99b6da5e84a.19d04de00934554d34f2a675f0100fd307a76107&lang=ru-en&text=${rightAnswer}`,
-      false
+    finalAnswersArrayGenerator(
+      this.state.wordsToTest[0].translation,
+      this.setAnswersArray
     );
-    xhr.send();
-    if (xhr.status != 200) {
-      console.log(xhr.status + ": " + xhr.statusText);
-    } else {
-      var data = JSON.parse(xhr.responseText);
-      if (data.def.length == 0) {
-        var partOfSpeach = "noun";
-      } else {
-        var partOfSpeach = data.def[0].pos;
-      }
-
-      if (partOfSpeach == "adjective") {
-        return this.createAnswersArray(Adjectives, rightAnswer);
-      } else if (partOfSpeach == "adverb") {
-        return this.createAnswersArray(Adverbs, rightAnswer);
-      } else if (partOfSpeach == "conjunction" || partOfSpeach == "particle") {
-        return this.createAnswersArray(Conjunctions, rightAnswer);
-      } else if (partOfSpeach == "noun") {
-        return this.createAnswersArray(Nouns, rightAnswer);
-      } else if (partOfSpeach == "numeral") {
-        return this.createAnswersArray(Numerous, rightAnswer);
-      } else if (partOfSpeach == "preposition") {
-        return this.createAnswersArray(Prepositions, rightAnswer);
-      } else if (partOfSpeach == "pronoun") {
-        return this.createAnswersArray(Pronouns, rightAnswer);
-      } else if (partOfSpeach == "verb") {
-        return this.createAnswersArray(Verbs, rightAnswer);
-      } else {
-        return this.createAnswersArray(Nouns, rightAnswer);
-      }
-    }
-  };
-
-  // Fisher-Yates Shuffle ALGORITHM
-  shuffleArray = array => {
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex;
-
-    while (0 !== currentIndex) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-  };
+  }
 
   uncheckRadioInputs = inputParents => {
     for (let i = 0; i < inputParents.length; i++) {
       inputParents[i].children[0].checked = false;
     }
-  };
-
-  finalAnswersArrayGenerator = rightAnswer => {
-    // Generate array of answers with right parts of speach
-    var answersArray = this.smartAnswersCreator(rightAnswer.toLowerCase());
-    // Shuffling this generated array
-    this.shuffleArray(answersArray);
-    // Than setting it to state
-    this.setState({ answersArray: answersArray });
   };
 
   onInputChange = word => {
@@ -171,11 +89,13 @@ class Quiz extends React.Component {
             this.checkAnswer = ref;
           }}
           onClick={() => {
-            if (this.state.selectedAnswer == this.state.rightAnswer) {
+            if (this.state.selectedAnswer === this.state.rightAnswer) {
               this.quiz.style.background = "#3FFFA6";
               setTimeout(() => {
                 this.setState({ questionIndex: this.state.questionIndex + 1 });
-                if (this.state.questionIndex != this.state.wordsToTest.length) {
+                if (
+                  this.state.questionIndex !== this.state.wordsToTest.length
+                ) {
                   this.setState({
                     questionWord: this.state.wordsToTest[
                       this.state.questionIndex
@@ -184,7 +104,10 @@ class Quiz extends React.Component {
                       this.state.questionIndex
                     ].translation.toLowerCase()
                   });
-                  this.finalAnswersArrayGenerator(this.state.rightAnswer);
+                  finalAnswersArrayGenerator(
+                    this.state.rightAnswer,
+                    this.setAnswersArray
+                  );
                   this.quiz.style.background = "white";
                   this.uncheckRadioInputs(this.quiz.children[1].children);
                 } else {
