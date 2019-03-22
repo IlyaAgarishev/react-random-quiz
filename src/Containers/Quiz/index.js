@@ -2,6 +2,11 @@ import React from "react";
 import styles from "./index.module.css";
 import Answer from "../Answer";
 import { finalAnswersArrayGenerator } from "../../arrayGenerator.js";
+import {
+  setQuizBackground,
+  uniqueIdGenerator,
+  uncheckRadioInputs
+} from "../../ponyFunctions.js";
 
 class Quiz extends React.Component {
   constructor(props) {
@@ -13,7 +18,8 @@ class Quiz extends React.Component {
       ],
       answers: [],
       questionIndex: 0,
-      quizIsFinished: false
+      quizIsFinished: false,
+      background: "white"
     };
   }
 
@@ -33,12 +39,6 @@ class Quiz extends React.Component {
     );
   }
 
-  uncheckRadioInputs = inputParents => {
-    for (let i = 0; i < inputParents.length; i++) {
-      inputParents[i].children[0].checked = false;
-    }
-  };
-
   onInputChange = word => {
     this.setState({ selectedAnswer: word });
   };
@@ -48,7 +48,7 @@ class Quiz extends React.Component {
       <div className={styles.quizIsFinished}>quiz is finished</div>
     ) : (
       <div
-        className={styles.quiz}
+        className={setQuizBackground(this.state.background, styles)}
         ref={ref => {
           this.quiz = ref;
         }}
@@ -56,41 +56,27 @@ class Quiz extends React.Component {
         <div className={styles.questionText}>
           "{this.state.questionWord}" переводится как ?
         </div>
-        <form
-          ref={ref => {
-            this.answers = ref;
-          }}
-        >
+        <form>
           {this.state.answersArray.map((element, index) => {
             return (
               <Answer
                 onInputChange={this.onInputChange}
                 answer={element.answer}
                 key={index}
-                answerId={
-                  this.state.questionWord +
-                  "_" +
-                  element.answer +
-                  "_" +
-                  index +
-                  "_" +
-                  Math.floor(Math.random(0, 1) * 1000)
-                }
-                ref={ref => {
-                  this.answer = ref;
-                }}
+                answerId={uniqueIdGenerator(
+                  this.state.questionWord,
+                  element.answer,
+                  index
+                )}
               />
             );
           })}
         </form>
         <div
           className={styles.checkAnswer}
-          ref={ref => {
-            this.checkAnswer = ref;
-          }}
           onClick={() => {
             if (this.state.selectedAnswer === this.state.rightAnswer) {
-              this.quiz.style.background = "#3FFFA6";
+              this.setState({ background: "green" });
               setTimeout(() => {
                 this.setState({ questionIndex: this.state.questionIndex + 1 });
                 if (
@@ -108,17 +94,17 @@ class Quiz extends React.Component {
                     this.state.rightAnswer,
                     this.setAnswersArray
                   );
-                  this.quiz.style.background = "white";
-                  this.uncheckRadioInputs(this.quiz.children[1].children);
+                  this.setState({ background: "white" });
+                  uncheckRadioInputs(this.quiz.children[1].children);
                 } else {
                   this.setState({ quizIsFinished: true });
                 }
               }, 700);
             } else {
-              this.uncheckRadioInputs(this.quiz.children[1].children);
-              this.quiz.style.background = "#ff6c6c";
+              this.setState({ background: "red" });
+              uncheckRadioInputs(this.quiz.children[1].children);
               setTimeout(() => {
-                this.quiz.style.background = "white";
+                this.setState({ background: "white" });
               }, 150);
             }
           }}

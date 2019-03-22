@@ -39,3 +39,11 @@
 .quizIsFinished {
   background: white !important;
 }
+
+.green {
+  background: #3fffa6;
+}
+
+.red {
+  background: #ff6c6c;
+}
