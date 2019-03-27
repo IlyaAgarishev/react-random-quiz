@@ -27,6 +27,7 @@ ReactDOM.render(
     ]}
   />,
   document.getElementById("root")
+);
 ```
 
 ## Props
@@ -39,7 +40,7 @@ ReactDOM.render(
 
 - `yarn start` - start dev server and open browser
 - `yarn build` - make a production build
-- `yarn dist` - make a dist folder(dist folder for npm publishing)
+- `yarn dist` - make a dist folder(dist folder is for npm publishing)
 - `yarn test` - start tests 
 
 
