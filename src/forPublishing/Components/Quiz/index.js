@@ -7,15 +7,20 @@ import {
   uniqueIdGenerator,
   uncheckRadioInputs
 } from "../../ponyFunctions.js";
+import PropTypes from "prop-types";
 
 class Quiz extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      wordsToTest: [
-        { word: "Great", translation: "Великий" },
-        { word: "Sad", translation: "Грустный" }
-      ],
+      wordsToTest: this.props.wordsToTest
+        ? this.props.wordsToTest
+        : [
+            { word: "Great", translation: "Великий" },
+            { word: "Sad", translation: "Грустный" },
+            { word: "Cat", translation: "Кот" },
+            { word: "Dog", translation: "Собака" }
+          ],
       answers: [],
       questionIndex: 0,
       quizIsFinished: false,
@@ -118,5 +123,9 @@ class Quiz extends React.Component {
     );
   }
 }
+
+Quiz.propTypes = {
+  wordsToTest: PropTypes.array.isRequired
+};
 
 export default Quiz;

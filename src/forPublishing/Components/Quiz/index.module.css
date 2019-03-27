@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900");
 
 .quiz {
-  position: absolute;
+  position: relative;
   padding: 30px;
   box-shadow: 0 0 20px 1px rgb(238, 238, 238);
   display: flex;

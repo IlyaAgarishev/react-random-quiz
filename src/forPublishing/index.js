@@ -1,3 +1,3 @@
-import Quiz from "./Containers/Quiz";
+import Quiz from "./Components/Quiz";
 
 export default Quiz;
