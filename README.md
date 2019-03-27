@@ -8,7 +8,7 @@ See demo : http://randomquiz.surge.sh/
 
 ![first](https://i.imgur.com/5Be8ims.gif)
 
-## Installd
+## Install
 
 `yarn add react-random-quiz`
 
