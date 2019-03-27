@@ -1,21 +1,31 @@
 {
   "name": "react-random-quiz",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Ilya Agarishev",
-  "private": true,
-  "dependencies": {
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
-    "react-scripts": "2.1.1"
-  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "prebuild": "rimraf dist",
+    "dist": "NODE_ENV=production babel src/forPublishing --out-dir dist --copy-files"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-preset-react-app": "^7.0.2",
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5",
+    "react-scripts": "^2.1.8",
+    "rimraf": "^2.6.3"
   },
   "browserslist": [
     ">0.2%",
