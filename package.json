@@ -25,7 +25,16 @@
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
     "react-scripts": "^2.1.8",
-    "rimraf": "^2.6.3"
+    "rimraf": "^2.6.3",
+    "random-words": "^1.1.0",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.11.0",
+    "enzyme-to-json": "^3.3.5"
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
   },
   "browserslist": [
     ">0.2%",
