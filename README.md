@@ -46,3 +46,7 @@ ReactDOM.render(
 - `yarn test` - start tests 
 
 
+## Npm publish
+If you want to publish your own version you need to `yarn dist` to generate dist folder then `npm login` and `npm publish`
+
+
