@@ -1,5 +1,6 @@
 # React random quiz
 
+Это квиз. Каждый раз когда вы обновляете его - он генерит в случайном порядке рандомные ответы(на русском языке), в зависимости от части речи правильного ответа. Я создал этот квиз, чтобы использовать его в своем браузерном расширении 'qiqi' для более эффективного изучения английского языка.
 
 This is a quiz built with react. Every time you load it, it randomly generates answers(russian lang) depending on part of speach of the right answer.
 I built this quiz to use it in my chrome extension "qiqi" to learn english more effectively.
@@ -35,7 +36,7 @@ ReactDOM.render(
 
 | prop                         | type      | description                                                                                                                                    |
 | ---------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `wordsToTest`                   | `array`    | Array of english words and russian translation of this words(Array is required)                                                                                                                                                          |
+| `wordsToTest`                   | `array`    | Array of english words and russian translation of this words(Array is required). Amount of words is unlimited.                                                                                                                                                           |
 
 ### Available commands:
 
