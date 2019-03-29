@@ -52,72 +52,76 @@ class Quiz extends React.Component {
     return this.state.quizIsFinished ? (
       <div className={styles.quizIsFinished}>quiz is finished</div>
     ) : (
-      <div
-        className={setQuizBackground(this.state.background, styles)}
-        ref={ref => {
-          this.quiz = ref;
-        }}
-      >
-        <div className={styles.questionText}>
-          "{this.state.questionWord}" переводится как ?
-        </div>
-        <form>
-          {this.state.answersArray.map((element, index) => {
-            return (
-              <Answer
-                onInputChange={this.onInputChange}
-                answer={element.answer}
-                key={index}
-                answerId={uniqueIdGenerator(
-                  this.state.questionWord,
-                  element.answer,
-                  index
-                )}
-              />
-            );
-          })}
-        </form>
+      <div className={styles.quizWrapper}>
         <div
-          className={styles.checkAnswer}
-          onClick={() => {
-            if (this.state.selectedAnswer === this.state.rightAnswer) {
-              this.setState({ background: "green" });
-              setTimeout(() => {
-                this.setState({ questionIndex: this.state.questionIndex + 1 });
-                if (
-                  this.state.questionIndex !== this.state.wordsToTest.length
-                ) {
-                  this.setState({
-                    questionWord: this.state.wordsToTest[
-                      this.state.questionIndex
-                    ].word,
-                    rightAnswer: this.state.wordsToTest[
-                      this.state.questionIndex
-                    ].translation.toLowerCase()
-                  });
-                  finalAnswersArrayGenerator(
-                    this.state.rightAnswer,
-                    this.setAnswersArray
-                  );
-                  this.setState({ background: "white" });
-                  uncheckRadioInputs(this.quiz.children[1].children);
-                } else {
-                  this.setState({ quizIsFinished: true });
-                }
-              }, 700);
-            } else {
-              this.setState({ background: "red" });
-              uncheckRadioInputs(this.quiz.children[1].children);
-              setTimeout(() => {
-                this.setState({ background: "white" });
-              }, 150);
-            }
+          className={setQuizBackground(this.state.background, styles)}
+          ref={ref => {
+            this.quiz = ref;
           }}
         >
-          Дальше
-        </div>
-        <div className={styles.questionsCounter}>
-          {this.state.questionIndex + 1} / {this.state.wordsToTest.length}
+          <div className={styles.questionText}>
+            "{this.state.questionWord}" переводится как ?
+          </div>
+          <form>
+            {this.state.answersArray.map((element, index) => {
+              return (
+                <Answer
+                  onInputChange={this.onInputChange}
+                  answer={element.answer}
+                  key={index}
+                  answerId={uniqueIdGenerator(
+                    this.state.questionWord,
+                    element.answer,
+                    index
+                  )}
+                />
+              );
+            })}
+          </form>
+          <div
+            className={styles.checkAnswer}
+            onClick={() => {
+              if (this.state.selectedAnswer === this.state.rightAnswer) {
+                this.setState({ background: "green" });
+                setTimeout(() => {
+                  this.setState({
+                    questionIndex: this.state.questionIndex + 1
+                  });
+                  if (
+                    this.state.questionIndex !== this.state.wordsToTest.length
+                  ) {
+                    this.setState({
+                      questionWord: this.state.wordsToTest[
+                        this.state.questionIndex
+                      ].word,
+                      rightAnswer: this.state.wordsToTest[
+                        this.state.questionIndex
+                      ].translation.toLowerCase()
+                    });
+                    finalAnswersArrayGenerator(
+                      this.state.rightAnswer,
+                      this.setAnswersArray
+                    );
+                    this.setState({ background: "white" });
+                    uncheckRadioInputs(this.quiz.children[1].children);
+                  } else {
+                    this.setState({ quizIsFinished: true });
+                  }
+                }, 700);
+              } else {
+                this.setState({ background: "red" });
+                uncheckRadioInputs(this.quiz.children[1].children);
+                setTimeout(() => {
+                  this.setState({ background: "white" });
+                }, 150);
+              }
+            }}
+          >
+            Дальше
+          </div>
+          <div className={styles.questionsCounter}>
+            {this.state.questionIndex + 1} / {this.state.wordsToTest.length}
+          </div>
         </div>
       </div>
     );

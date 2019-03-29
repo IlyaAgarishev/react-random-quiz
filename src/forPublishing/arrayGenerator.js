@@ -12,11 +12,30 @@ export const takeRandomWordFromArray = array => {
 };
 
 export const createAnswersArray = (array, rightAnswer) => {
+  // Logic to avoid repited words
+  let answer_2 = takeRandomWordFromArray(array);
+  while (answer_2 === rightAnswer) {
+    answer_2 = takeRandomWordFromArray(array);
+  }
+  let answer_3 = takeRandomWordFromArray(array);
+  while (answer_3 === answer_2 || answer_3 === rightAnswer) {
+    answer_3 = takeRandomWordFromArray(array);
+  }
+  let answer_4 = takeRandomWordFromArray(array);
+  while (
+    answer_4 === answer_3 ||
+    answer_4 === answer_2 ||
+    answer_4 === rightAnswer
+  ) {
+    answer_4 = takeRandomWordFromArray(array);
+  }
+
+  // Finally creating answerArray
   const answersArray = [
     { answer: rightAnswer },
-    { answer: takeRandomWordFromArray(array) },
-    { answer: takeRandomWordFromArray(array) },
-    { answer: takeRandomWordFromArray(array) }
+    { answer: answer_2 },
+    { answer: answer_3 },
+    { answer: answer_4 }
   ];
 
   return answersArray;
