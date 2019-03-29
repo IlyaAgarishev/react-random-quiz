@@ -13,6 +13,7 @@ import {
   smartAnswersCreator,
   finalAnswersArrayGenerator
 } from "../forPublishing/arrayGenerator";
+import styles from "../forPublishing/Components/Quiz/index.module.css";
 
 // ponyFunctions testing
 
@@ -132,17 +133,20 @@ test("finalAnswersArrayGenerator callback gets an array as a parameter with rght
 
 // Components testing
 
-// test("shallow App snapshot", () => {
-//   const component = shallow(
-//     <Quiz
-//       wordsToTest={[
-//         { word: "Wolf", translation: "Волк" },
-//         { word: "Sad", translation: "Грустный" },
-//         { word: "Cat", translation: "Кот" },
-//         { word: "Dog", translation: "Собака" }
-//       ]}
-//     />
-//   );
+test("Quiz first word equals array[0]", () => {
+  const wordsToTestArray = [
+    { word: "Wolf", translation: "Волк" },
+    { word: "Sad", translation: "Грустный" },
+    { word: "Cat", translation: "Кот" },
+    { word: "Dog", translation: "Собака" }
+  ];
 
-//   expect(component.find("#questionText").children[0].innerHTML).toBe("as");
-// });
+  const component = mount(<Quiz wordsToTest={wordsToTestArray} />);
+
+  let word = component
+    .find(".questionText")
+    .text()
+    .split('"')[1];
+
+  expect(word).toBe(wordsToTestArray[0].word);
+});
