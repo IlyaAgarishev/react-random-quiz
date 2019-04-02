@@ -23,7 +23,6 @@ class Quiz extends React.Component {
           ],
       answers: [],
       questionIndex: 0,
-      quizIsFinished: false,
       background: "white"
     };
   }
@@ -49,9 +48,7 @@ class Quiz extends React.Component {
   };
 
   render() {
-    return this.state.quizIsFinished ? (
-      <div className={styles.quizIsFinished}>quiz is finished</div>
-    ) : (
+    return (
       <div className={styles.quizWrapper}>
         <div
           className={setQuizBackground(this.state.background, styles)}
@@ -105,7 +102,8 @@ class Quiz extends React.Component {
                     this.setState({ background: "white" });
                     uncheckRadioInputs(this.quiz.children[1].children);
                   } else {
-                    this.setState({ quizIsFinished: true });
+                    if (this.props.clearDictionary)
+                      this.props.clearDictionary();
                   }
                 }, 700);
               } else {
