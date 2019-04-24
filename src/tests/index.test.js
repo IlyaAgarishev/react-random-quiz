@@ -13,26 +13,28 @@ import {
   smartAnswersCreator,
   finalAnswersArrayGenerator
 } from "../forPublishing/arrayGenerator";
-import styles from "../forPublishing/Components/Quiz/index.module.css";
+
+// tools
+
+const backgroundStyles = { quiz: "quiz", green: "green", red: "red" };
+
+const pets = ["cat", "dog", "frog"];
 
 // ponyFunctions testing
 
 test("setQuizBackground white returns quiz", () => {
   const background = "white";
-  const styles = { quiz: "quiz", green: "green", red: "red" };
-  expect(setQuizBackground(background, styles)).toBe("quiz");
+  expect(setQuizBackground(background, backgroundStyles)).toBe("quiz");
 });
 
 test("setQuizBackground green returns quiz green", () => {
   const background = "green";
-  const styles = { quiz: "quiz", green: "green", red: "red" };
-  expect(setQuizBackground(background, styles)).toBe("quiz green");
+  expect(setQuizBackground(background, backgroundStyles)).toBe("quiz green");
 });
 
 test("setQuizBackground red returns quiz red", () => {
   const background = "red";
-  const styles = { quiz: "quiz", green: "green", red: "red" };
-  expect(setQuizBackground(background, styles)).toBe("quiz red");
+  expect(setQuizBackground(background, backgroundStyles)).toBe("quiz red");
 });
 
 test("uniqueIdGenerator returns right string design", () => {
@@ -49,23 +51,19 @@ test("uniqueIdGenerator returns right string design", () => {
 // arrayGenerator functions testing
 
 test("takeRandomWordFromArray returns string", () => {
-  const array = ["cat", "dog", "frog"];
-  expect(typeof takeRandomWordFromArray(array)).toBe("string");
+  expect(typeof takeRandomWordFromArray(pets)).toBe("string");
 });
 
 test("createAnswersArray returns array", () => {
-  let array = ["cat", "dog", "frog"];
-  expect(Array.isArray(createAnswersArray(array, "pet"))).toBe(true);
+  expect(Array.isArray(createAnswersArray(pets, "pet"))).toBe(true);
 });
 
 test("createAnswersArray returns  array with length == 4 ", () => {
-  let array = ["cat", "dog", "frog"];
-  expect(createAnswersArray(array, "pet").length).toBe(4);
+  expect(createAnswersArray(pets, "pet").length).toBe(4);
 });
 
 test("createAnswersArray returns array without repeated words", () => {
-  const array = ["cat", "dog", "frog"];
-  const answersArray = createAnswersArray(array, "pet");
+  const answersArray = createAnswersArray(pets, "pet");
   answersArray.map((element, index) => {
     const newArray = answersArray;
     newArray.splice(index, 1);
@@ -94,26 +92,6 @@ test("finalAnswersArrayGenerator returns nothing", () => {
   expect(finalAnswersArrayGenerator(rightAnswer, callback)).toBeUndefined();
 });
 
-test("finalAnswersArrayGenerator callback gets an array as a parameter", () => {
-  const rightAnswer = "красный";
-  let array;
-  const callback = data => {
-    array = data;
-  };
-  finalAnswersArrayGenerator(rightAnswer, callback);
-  expect(Array.isArray(array)).toBe(true);
-});
-
-test("finalAnswersArrayGenerator callback gets an array as a parameter with length === 4", () => {
-  const rightAnswer = "красный";
-  let array;
-  const callback = data => {
-    array = data;
-  };
-  finalAnswersArrayGenerator(rightAnswer, callback);
-  expect(array.length).toBe(4);
-});
-
 test("finalAnswersArrayGenerator callback gets an array as a parameter with rghtAnswer inside", () => {
   const rightAnswer = "красный";
   let array;
@@ -121,6 +99,8 @@ test("finalAnswersArrayGenerator callback gets an array as a parameter with rght
     array = data;
   };
   finalAnswersArrayGenerator(rightAnswer, callback);
+  expect(Array.isArray(array)).toBe(true);
+  expect(array.length).toBe(4);
   const checkRightAnswer = () => {
     for (let i = 0; i < array.length; i++) {
       if (array[i].answer === rightAnswer) {
